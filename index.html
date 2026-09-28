@@ -36,26 +36,64 @@
     <script>
         const API_KEY = "RlGrXLDS5niF5gx1M3PE";
 
+        // Ambil negara/provinsi/kecamatan dari feature atau context
+        function cariWilayah(feature, tipe) {
+            if (feature.place_type && feature.place_type.some(t => tipe.includes(t))) {
+                return feature.text;
+            }
+            if (feature.context) {
+                for (const c of feature.context) {
+                    const prefix = c.id.split(".")[0];
+                    if (tipe.includes(prefix)) return c.text;
+                }
+            }
+            return "-";
+        }
+
         function cari() {
             const kota = $("#input-lokasi").val().trim();
-            const urlapi = "https://api.maptiler.com/geocoding/" + encodeURIComponent(kota) + ".json?key=" + API_KEY;
+            if (!kota) {
+                $("#status").text("Masukkan nama lokasi dulu ya.");
+                return;
+            }
+
+            $("#status").text("Mencari data...");
+            $("#hasil").hide();
+
+            const urlapi = "https://api.maptiler.com/geocoding/" + encodeURIComponent(kota) + ".json?key=" + API_KEY + "&language=id&limit=1";
 
             $.ajax({
                 url: urlapi,
                 method: "GET",
                 success: function (data) {
                     console.log(data);
+                    if (!data.features || data.features.length === 0) {
+                        $("#status").text("Lokasi tidak ditemukan.");
+                        return;
+                    }
+
                     const f = data.features[0];
-                    $("#lokasi").text(f.matching_text);
-                    $("#negara").text(f.context[f.context.length - 1].text);
+                    $("#lokasi").text(f.matching_text || f.text || f.place_name);
+                    $("#negara").text(cariWilayah(f, ["country"]));
+                    $("#provinsi").text(cariWilayah(f, ["region"]));
+                    $("#kecamatan").text(cariWilayah(f, ["municipal_district", "subregion", "locality", "neighbourhood", "municipality"]));
+                    $("#longitude").text(f.center[0]);
+                    $("#latitude").text(f.center[1]);
+
+                    $("#status").text("");
+                    $("#hasil").show();
                 },
                 error: function (error) {
                     console.log(error);
+                    $("#status").text("Gagal mengambil data API.");
                 }
             });
         }
 
         $("#btn-cari").on("click", cari);
+        $("#input-lokasi").on("keypress", function (e) {
+            if (e.key === "Enter") cari();
+        });
     </script>
 </body>
 </html>
