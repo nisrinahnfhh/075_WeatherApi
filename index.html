@@ -4,85 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather API - Pencarian Lokasi</title>
-        <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, sans-serif; }
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
         body {
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+            color: #f8fafc;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
-            background-size: 300% 300%;
-            animation: bg 12s ease infinite;
             padding: 20px;
-        }
-        @keyframes bg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .card {
-            width: 100%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 35px;
             border-radius: 24px;
-            padding: 28px;
-            color: #fff;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .header { text-align: center; margin-bottom: 20px; }
-        .header .title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; opacity: .85; }
-        .header h3 { margin-top: 10px; font-size: 18px; }
-        .header p { font-size: 14px; opacity: .85; }
-        hr { border: none; height: 1px; background: rgba(255,255,255,.4); margin: 16px 0; }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.15);
+        }
 
-        .search { display: flex; gap: 8px; margin-bottom: 18px; }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header .title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #a855f7;
+            margin-bottom: 8px;
+        }
+
+        .header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+        }
+
+        .search {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
         .search input {
             flex: 1;
-            padding: 12px 14px;
-            border: none;
-            border-radius: 12px;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
             outline: none;
-            font-size: 15px;
+            font-size: 0.95rem;
+            background: rgba(15, 23, 42, 0.6);
+            color: #ffffff;
+            transition: all 0.3s ease;
         }
-        .search button {
-            padding: 12px 18px;
-            border: none;
-            border-radius: 12px;
-            background: #1e1b4b;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform .15s, background .2s;
-        }
-        .search button:hover { background: #312e81; transform: translateY(-2px); }
 
-        .lokasi-title { text-align: center; margin-bottom: 14px; }
-        .lokasi-title small { opacity: .8; }
-        .lokasi-title h2 { font-size: 24px; margin-top: 4px; }
+        .search input::placeholder {
+            color: #64748b;
+        }
+
+        .search input:focus {
+            border-color: #818cf8;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
+        }
+
+        .search button {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .search button:hover {
+            opacity: 0.9;
+        }
+
+        .search button:active {
+            transform: scale(0.96);
+        }
+
+        #status {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        #hasil {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lokasi-title {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .lokasi-title small {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #a855f7;
+            font-weight: 700;
+        }
+
+        .lokasi-title h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-top: 4px;
+            font-weight: 700;
+        }
 
         .row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            animation: fade .5s ease both;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .row span:first-child { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; opacity: .85; }
-        .row span:last-child { font-weight: 600; text-align: right; }
-        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-        #status { text-align: center; font-size: 14px; margin-bottom: 10px; min-height: 18px; }
-        #hasil { display: none; }
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .row span:first-child {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .row span:last-child {
+            color: #f1f5f9;
+            font-weight: 600;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -93,7 +195,7 @@
             <p>20240140075</p>
         </div>
         <hr>
-         <div class="search">
+        <div class="search">
             <input type="text" id="input-lokasi" placeholder="Cari lokasi... (mis. Bandung)">
             <button id="btn-cari">Search</button>
         </div>
@@ -103,20 +205,20 @@
         <div id="hasil">
             <div class="lokasi-title">
                 <small>Lokasi</small>
-                <h2 id="lokasi"></h2>
+                <h2 id="lokasi">-</h2>
             </div>
-            <div class="row"><span>Negara</span><span id="negara"></span></div>
-            <div class="row"><span>Provinsi</span><span id="provinsi"></span></div>
-            <div class="row"><span>Kecamatan</span><span id="kecamatan"></span></div>
-            <div class="row"><span>Longitude</span><span id="longitude"></span></div>
-            <div class="row"><span>Latitude</span><span id="latitude"></span></div>
+            <div class="row"><span>Negara</span><span id="negara">-</span></div>
+            <div class="row"><span>Provinsi</span><span id="provinsi">-</span></div>
+            <div class="row"><span>Kecamatan</span><span id="kecamatan">-</span></div>
+            <div class="row"><span>Longitude</span><span id="longitude">-</span></div>
+            <div class="row"><span>Latitude</span><span id="latitude">-</span></div>
         </div>
     </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js" integrity="sha512-8LENNbXmzI/Gbj+OwXmqR6V4QaUAw0/porPzy1+dQoJqC0JPHedWoe0DDOTL2uHA5XXJyIsPtiMHH86pVlay6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js" integrity="sha512-8LENNbXmzI/Gbj+OwXmqR6V4QaUAw0/porPzy1+dQoJqC0JPHedWoe0DDOTL2uHA5XXJyIsPtiMHH86pVlay6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const API_KEY = "RlGrXLDS5niF5gx1M3PE";
 
-        // Ambil negara/provinsi/kecamatan dari feature atau context
         function cariWilayah(feature, tipe) {
             if (feature.place_type && feature.place_type.some(t => tipe.includes(t))) {
                 return feature.text;
@@ -130,6 +232,53 @@
             return "-";
         }
 
+        function cariKecamatan(f) {
+            $("#kecamatan").text("Mencari...");
+            const lon = f.center[0];
+            const lat = f.center[1];
+
+            const prioritas = [
+                "municipal_district",
+                "joint_submunicipality",
+                "municipality",
+                "joint_municipality",
+                "locality",
+                "neighbourhood"
+            ];
+
+            function pilih(daftar) {
+                for (const tipe of prioritas) {
+                    const hit = daftar.find(x => x.id && x.id.split(".")[0] === tipe);
+                    if (hit) return hit.text;
+                }
+                return null;
+            }
+
+            const awal = [f].concat(f.context || []);
+            const dariAwal = pilih(awal);
+            if (dariAwal) {
+                $("#kecamatan").text(dariAwal);
+                return;
+            }
+
+            $.ajax({
+                url: "https://api.maptiler.com/geocoding/" + lon + "," + lat + ".json?key=" + API_KEY + "&language=id",
+                method: "GET",
+                success: function (data) {
+                    const semua = [];
+                    data.features.forEach(x => {
+                        semua.push(x);
+                        (x.context || []).forEach(c => semua.push(c));
+                    });
+                    $("#kecamatan").text(pilih(semua) || "-");
+                },
+                error: function (error) {
+                    console.log(error);
+                    $("#kecamatan").text("-");
+                }
+            });
+        }
+
         function cari() {
             const kota = $("#input-lokasi").val().trim();
             if (!kota) {
@@ -138,7 +287,6 @@
             }
 
             $("#status").text("Mencari data...");
-            $("#hasil").hide();
 
             const urlapi = "https://api.maptiler.com/geocoding/" + encodeURIComponent(kota) + ".json?key=" + API_KEY + "&language=id&limit=1";
 
@@ -146,7 +294,6 @@
                 url: urlapi,
                 method: "GET",
                 success: function (data) {
-                    console.log(data);
                     if (!data.features || data.features.length === 0) {
                         $("#status").text("Lokasi tidak ditemukan.");
                         return;
@@ -156,12 +303,11 @@
                     $("#lokasi").text(f.matching_text || f.text || f.place_name);
                     $("#negara").text(cariWilayah(f, ["country"]));
                     $("#provinsi").text(cariWilayah(f, ["region"]));
-                    $("#kecamatan").text(cariWilayah(f, ["municipal_district", "subregion", "locality", "neighbourhood", "municipality"]));
+                    cariKecamatan(f);
                     $("#longitude").text(f.center[0]);
                     $("#latitude").text(f.center[1]);
 
                     $("#status").text("");
-                    $("#hasil").show();
                 },
                 error: function (error) {
                     console.log(error);
